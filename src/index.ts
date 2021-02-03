@@ -34,14 +34,13 @@ const unencodedElements = new Set([
  * Format attributes
  */
 function formatAttributes(
-  attributes: Record<string, string | null> | undefined,
+  attributes:  Record<string, string | null>[] | undefined,
   opts: DomSerializerOptions
 ) {
-  if (!attributes) return;
+  if (!attributes || !attributes.length) return;
 
-  return Object.keys(attributes)
-    .map((key) => {
-      const value = attributes[key] ?? "";
+  return attributes.map(attribute => Object.keys(attribute).map((key) => {
+      const value = attribute[key] ?? "";
 
       if (opts.xmlMode === "foreign") {
         /* Fix up mixed-case attribute names */
@@ -57,8 +56,8 @@ function formatAttributes(
           ? encodeXML(value)
           : value.replace(/"/g, "&quot;")
       }"`;
-    })
-    .join(" ");
+  }).join("")).join(" ")
+
 }
 
 /**
